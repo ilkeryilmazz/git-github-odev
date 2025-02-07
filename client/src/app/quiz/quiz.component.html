@@ -1,0 +1,46 @@
+<div class="quiz-container">
+  <div class="quiz-content" *ngIf="!showResult">
+    <div class="progress-bar">
+      <div class="progress" [style.width]="((currentQuestionIndex + 1) / questions.length * 100) + '%'"></div>
+    </div>
+    
+    <div class="question-counter">
+      Soru {{currentQuestionIndex + 1}}/{{questions.length}}
+    </div>
+
+    <div class="question-card" *ngIf="currentQuestion">
+      <h2 class="question-text">{{currentQuestion.question_text}}</h2>
+      
+      <div class="options-grid">
+        <button 
+          *ngFor="let option of getOptions()"
+          class="option-button"
+          [class.selected]="selectedAnswer === option"
+          [class.correct]="isAnswered && option === currentQuestion.correct_answer"
+          [class.incorrect]="isAnswered && selectedAnswer === option && option !== currentQuestion.correct_answer"
+          (click)="checkAnswer(option)"
+          [disabled]="isAnswered">
+          {{option}}
+        </button>
+      </div>
+
+      <div class="feedback" *ngIf="isAnswered">
+        <div class="feedback-text" [class.correct]="isCorrect" [class.incorrect]="!isCorrect">
+          {{ isCorrect ? '✓ Doğru!' : '✗ Yanlış!' }}
+        </div>
+        <button class="next-button" (click)="nextQuestion()">
+          {{ currentQuestionIndex === questions.length - 1 ? 'Sonuçları Gör' : 'Sonraki Soru' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-container" *ngIf="showResult">
+    <h2>Quiz Tamamlandı!</h2>
+    <div class="score-display">
+      <div class="score">{{score}}/{{questions.length}}</div>
+      <div class="percentage">{{calculatePercentage()}}%</div>
+    </div>
+    <button class="restart-button" (click)="restartQuiz()">Yeniden Başla</button>
+  </div>
+</div>
